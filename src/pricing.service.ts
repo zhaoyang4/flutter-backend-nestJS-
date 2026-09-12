@@ -92,11 +92,15 @@ export class PricingService {
     const store = (await this.storeRepo.findOne({ where: { id: 1 } })) ?? null;
     let deliveryFee = 0;
     let freeDeliveryShort = 0;
-    const minOrder = store?.minOrderAmount ?? 0;
+    // ⚠️ 坑点：StoreConfig 的 minOrderAmount / deliveryFee 是 decimal 列，
+    // TypeORM 查出来是「字符串」而非数字。这里必须 Number() 转成数字，
+    // 否则下面 (原价-优惠+配送费) 会变成字符串拼接，触发
+    // `.toFixed is not a function`（外卖分支必崩；堂食因 deliveryFee 保持 0 不触发）。
+    const minOrder = Number(store?.minOrderAmount ?? 0);
     if (orderType === 'takeout') {
       // 外卖「原价合计」是否达到起送价（V1.0 以原价计起送，简单可预期）
       if (originalAmount >= minOrder) {
-        deliveryFee = store?.deliveryFee ?? 0;
+        deliveryFee = Number(store?.deliveryFee ?? 0);
       } else {
         freeDeliveryShort = Number((minOrder - originalAmount).toFixed(2));
       }
