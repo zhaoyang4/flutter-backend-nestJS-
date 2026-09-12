@@ -1,0 +1,27 @@
+# Dependencies（依赖，1.5 万文件，绝不入库）
+node_modules/
+
+# Build output（tsc 编译产物）
+dist/
+seedbuild/
+
+# Runtime logs
+*.log
+backend.log
+
+# Environment（密钥/本地配置，绝不入库）
+.env
+.env.local
+.env.*.local
+
+# Uploaded files（顾客上传的菜品图，运行时数据，非源码）
+uploads/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.iml
+
+# Coverage
+coverage/
